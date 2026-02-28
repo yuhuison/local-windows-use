@@ -104,7 +104,7 @@ Browser tools connect to your real Chrome via CDP. Start Chrome with remote debu
 
 ```bash
 # Windows
-"C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222
+m
 
 # macOS
 /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222
