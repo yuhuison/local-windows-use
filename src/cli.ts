@@ -3,7 +3,7 @@
 import { program } from 'commander';
 import { createInterface } from 'readline';
 import { createServer } from 'http';
-import { mkdirSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';
 import { loadConfig, getConfigPath } from './config/loader.js';
@@ -62,8 +62,45 @@ program
 // init command
 program
   .command('init')
-  .description('Interactive setup — save config to ~/.windows-use.json')
-  .action(async () => {
+  .description('Interactive setup, or import/export config via base64')
+  .argument('[base64]', 'Import config from a base64 string')
+  .option('--export', 'Export current config as a base64 string')
+  .action(async (base64Input: string | undefined, opts: { export?: boolean }) => {
+    const configPath = getConfigPath();
+
+    // Export mode
+    if (opts.export) {
+      if (!existsSync(configPath)) {
+        console.error('No config found. Run `windows-use init` first.');
+        process.exit(1);
+      }
+      const raw = readFileSync(configPath, 'utf-8');
+      const encoded = Buffer.from(raw).toString('base64');
+      console.log(encoded);
+      return;
+    }
+
+    // Import mode
+    if (base64Input) {
+      try {
+        const decoded = Buffer.from(base64Input, 'base64').toString('utf-8');
+        const parsed = JSON.parse(decoded);
+        writeFileSync(configPath, JSON.stringify(parsed, null, 2) + '\n', 'utf-8');
+        console.log(`✅ Config imported to ${configPath}`);
+        // Show what was imported (mask API key)
+        const display = { ...parsed };
+        if (display.apiKey) {
+          display.apiKey = display.apiKey.slice(0, 6) + '...' + display.apiKey.slice(-4);
+        }
+        console.log(JSON.stringify(display, null, 2));
+      } catch {
+        console.error('Invalid base64 or JSON. Make sure you copied the full string.');
+        process.exit(1);
+      }
+      return;
+    }
+
+    // Interactive mode (default)
     const rl = createInterface({ input: process.stdin, output: process.stdout });
     const ask = (q: string): Promise<string> =>
       new Promise((resolve) => rl.question(q, (a) => resolve(a.trim())));
@@ -81,7 +118,6 @@ program
     if (apiKey) config.apiKey = apiKey;
     if (model) config.model = model;
 
-    const configPath = getConfigPath();
     writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n', 'utf-8');
     console.log(`\n✅ Config saved to ${configPath}`);
     console.log('You can now run: windows-use "your task here"\n');

@@ -20,7 +20,7 @@ export const screenshotTool: ToolDefinition = {
     const image = primary.captureImageSync();
     const physW = image.width;
     const physH = image.height;
-    const scaleFactor: number = (primary as any).scaleFactor ?? 1;
+    const scaleFactor: number = (primary as any).scaleFactor() ?? 1;
 
     // Logical dimensions (matching OS coordinate system used by nut-js)
     const logicalW = Math.round(physW / scaleFactor);

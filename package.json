@@ -1,6 +1,6 @@
 {
   "name": "windows-use",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Let big LLMs delegate Windows/browser automation to small LLMs via sessions",
   "type": "module",
   "bin": {

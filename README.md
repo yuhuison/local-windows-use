@@ -29,6 +29,12 @@ npm install -g windows-use
 ```bash
 # Interactive setup — saves config to ~/.windows-use.json
 windows-use init
+
+# Export config as a shareable base64 string
+windows-use init --export
+
+# Import config from a base64 string
+windows-use init eyJiYXNlVVJMIjoiaHR0cHM6Ly...
 ```
 
 You'll be prompted for:
