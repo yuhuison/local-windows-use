@@ -95,7 +95,7 @@ export interface ToolContext {
 
 export type ToolResult =
   | { type: 'text'; content: string }
-  | { type: 'image'; base64: string; mimeType: 'image/png' | 'image/jpeg'; screenshotId: string }
+  | { type: 'image'; base64: string; mimeType: 'image/png' | 'image/jpeg'; screenshotId: string; content?: string }
   | {
       type: 'report';
       status: 'completed' | 'blocked' | 'need_guidance';

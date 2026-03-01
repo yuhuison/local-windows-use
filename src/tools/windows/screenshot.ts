@@ -40,7 +40,7 @@ export const screenshotTool: ToolDefinition = {
     const id = ctx.screenshots.save(cleanBase64, 'image/jpeg', 'desktop');
 
     // Grid version → LLM (for coordinate reference)
-    const gridImage = await addCoordinateGrid(resized, logicalW, logicalH);
+    const { image: gridImage, gridRef } = await addCoordinateGrid(resized, logicalW, logicalH);
     const gridBase64 = gridImage.toString('base64');
 
     return {
@@ -48,6 +48,7 @@ export const screenshotTool: ToolDefinition = {
       base64: gridBase64,
       mimeType: 'image/jpeg',
       screenshotId: id,
+      content: gridRef,
     };
   },
 };

@@ -8,15 +8,18 @@ export function buildSystemPrompt(): string {
 4. When the task is done, you are blocked, or you need guidance, call \`report\` immediately.
 
 ## Reading Screenshots
-- Desktop screenshots include a **coordinate grid overlay**. The grid labels show pixel coordinates that directly correspond to \`mouse_click\` and \`mouse_move\` coordinates.
-- Use the grid numbers to estimate the (x, y) position of UI elements. For example, if a button appears near the grid label "400" horizontally and "300" vertically, click at approximately (400, 300).
-- The bottom-right corner label shows the total screen dimensions.
+- Screenshots include a **coordinate grid overlay** with **numbered blue reference markers** at grid intersections.
+- Each screenshot also returns a **text coordinate table** mapping marker numbers to exact screen coordinates, e.g. \`[1](200,200) [2](400,200)\`.
+- **How to locate elements precisely**: Find the nearest blue numbered marker to your target in the image, look up its exact (x,y) from the coordinate table, then adjust for the offset.
+- Example: A button is just right of marker \`[7]\`. The table says \`[7](600,400)\`. The button is ~50px right → click at (650, 400).
+- The red edge labels and bottom-right dimension label are also available for reference.
 
 ## Tool Selection
 - **Browser tasks**: Prefer \`browser_*\` tools (they use CSS selectors, more reliable than coordinates). Use \`browser_content\` to find text/elements when you can't locate them visually.
 - **Desktop/native app tasks**: Use \`screenshot\` + \`mouse_click\`/\`keyboard_*\`. Read coordinates from the grid overlay.
 - **Terminal tasks**: Prefer \`run_command\` over GUI interactions. It's faster and more reliable.
 - **Mixed tasks**: You can combine all tool types. For example, use \`run_command\` to launch an app, then \`screenshot\` + mouse to interact with it.
+- **Window management**: Use \`list_windows\` to see all open windows, \`focus_window\` to activate a specific window, and \`window_screenshot\` to capture a specific window (coordinates in the grid are screen-absolute, matching \`mouse_click\`). Focus a window before sending keyboard/mouse input to it.
 
 ## Smart Screenshot Strategy
 - ALWAYS take a screenshot before your first action.
@@ -35,7 +38,12 @@ export function buildSystemPrompt(): string {
 - **Popups/dialogs**: Handle unexpected dialogs (cookie banners, notifications, confirmations) by dismissing or accepting them, then continue with the original task.
 - **Dropdowns/menus**: Click to open, then screenshot to see options before selecting.
 - **Scrolling**: If content is below the fold, scroll down and screenshot. Check both browser_scroll (for web pages) and mouse_scroll (for desktop apps).
-- **Text input**: For browser forms, prefer \`browser_type\` with the CSS selector. For desktop apps, click the input field first, then use \`keyboard_type\`.
+- **Text input**:
+  - For browser forms, prefer \`browser_type\` with the CSS selector.
+  - For desktop apps, click the input field first, then type.
+  - Use \`clipboard_type\` (paste via clipboard) when: the text contains non-ASCII characters (Chinese, Japanese, etc.), the current IME might interfere, or you need fast input.
+  - Use \`keyboard_type\` (character-by-character) when: you need to trigger per-key events, or for simple ASCII text with English IME active.
+  - If \`keyboard_type\` produces garbled text, switch to \`clipboard_type\` or use \`switch_input_method\` to toggle the IME first.
 - **Coordinate precision**: When clicking small UI elements (buttons, links, checkboxes), aim for their center. If a click misses, adjust coordinates and try once more.
 
 ## Error Recovery

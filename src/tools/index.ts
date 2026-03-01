@@ -2,6 +2,8 @@ import { ToolRegistry } from './registry.js';
 import { screenshotTool } from './windows/screenshot.js';
 import { mouseClickTool, mouseMoveTool, mouseScrollTool } from './windows/mouse.js';
 import { keyboardTypeTool, keyboardPressTool } from './windows/keyboard.js';
+import { clipboardTypeTool, switchInputMethodTool } from './windows/clipboard.js';
+import { listWindowsTool, focusWindowTool, windowScreenshotTool } from './windows/window.js';
 import { runCommandTool } from './windows/command.js';
 import { fileReadTool } from './file/read.js';
 import { fileWriteTool } from './file/write.js';
@@ -24,6 +26,11 @@ export function createToolRegistry(): ToolRegistry {
   registry.register(mouseScrollTool);
   registry.register(keyboardTypeTool);
   registry.register(keyboardPressTool);
+  registry.register(clipboardTypeTool);
+  registry.register(switchInputMethodTool);
+  registry.register(listWindowsTool);
+  registry.register(focusWindowTool);
+  registry.register(windowScreenshotTool);
   registry.register(runCommandTool);
 
   // File tools

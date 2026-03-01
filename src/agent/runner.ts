@@ -208,11 +208,14 @@ export class AgentRunner {
         // Image results: send as multimodal content with screenshot ID
         if (result.type === 'image') {
           this.emit({ type: 'tool_result', step: stepsUsed, name: toolName, result: `Screenshot captured (${result.screenshotId})` });
+          const textPart = result.content
+            ? `Screenshot captured. ID: ${result.screenshotId}\n${result.content}`
+            : `Screenshot captured. ID: ${result.screenshotId}`;
           this.contextManager.append({
             role: 'tool',
             tool_call_id: toolCall.id,
             content: [
-              { type: 'text', text: `Screenshot captured. ID: ${result.screenshotId}` },
+              { type: 'text', text: textPart },
               {
                 type: 'image_url',
                 image_url: {
