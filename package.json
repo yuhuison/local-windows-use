@@ -1,6 +1,6 @@
 {
   "name": "windows-use",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Let big LLMs delegate Windows/browser automation to small LLMs via sessions",
   "type": "module",
   "bin": {
@@ -60,5 +60,13 @@
     "agent",
     "browser"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yuhuison/local-windows-use.git"
+  },
+  "homepage": "https://github.com/yuhuison/local-windows-use#readme",
+  "bugs": {
+    "url": "https://github.com/yuhuison/local-windows-use/issues"
+  }
 }
