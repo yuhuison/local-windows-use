@@ -1,8 +1,34 @@
-# windows-use
+<p align="center">
+  <h1 align="center">windows-use</h1>
+  <p align="center">
+    <strong>Save 90% context — let cheap models do the clicking.</strong>
+  </p>
+  <p align="center">
+    <a href="https://www.npmjs.com/package/windows-use"><img src="https://img.shields.io/npm/v/windows-use.svg" alt="npm version"></a>
+    <a href="https://www.npmjs.com/package/windows-use"><img src="https://img.shields.io/npm/dm/windows-use.svg" alt="npm downloads"></a>
+    <a href="https://github.com/yuhuison/local-windows-use/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/windows-use.svg" alt="license"></a>
+    <a href="https://github.com/yuhuison/local-windows-use"><img src="https://img.shields.io/github/stars/yuhuison/local-windows-use.svg?style=social" alt="GitHub stars"></a>
+  </p>
+</p>
 
-Let big LLMs delegate Windows & browser automation to small LLMs via sessions.
+---
 
-When AI agents use tools to operate Windows or browsers, screenshots and other multimodal returns consume massive context. This project solves that with a "big model directs small model" architecture — the small model (Qwen, GPT-4o-mini, etc.) does the actual work autonomously and reports back concise summaries with optional embedded screenshots.
+## The Problem
+
+When AI agents operate Windows or browsers, **every screenshot eats 1000+ tokens**. A single "open Chrome and search something" task can burn through 10K–50K tokens of your expensive model's context — just on screenshots and tool calls.
+
+**That's like hiring a CEO to move the mouse.**
+
+## The Solution
+
+`windows-use` introduces a **"big model directs, small model executes"** architecture:
+
+| | Without windows-use | With windows-use |
+|---|---|---|
+| **Who clicks?** | Claude / GPT-4o (expensive) | Qwen, GPT-4o-mini, DeepSeek (cheap) |
+| **Context cost per task** | 10K–50K tokens of screenshots | ~200 tokens (text summary) |
+| **What big model sees** | Raw screenshots + coordinates | Clean text report + optional images |
+| **Cost** | $$$ | ¢ |
 
 ```
 Big Model                    windows-use                    Small Model
@@ -17,6 +43,18 @@ Big Model                    windows-use                    Small Model
    │                              │                              │
    ├─ done_session ──────────►    │  cleanup                     │
 ```
+
+Your big model just says *"open Notepad and type Hello"* — the small model handles all the screenshots, clicking, and verification autonomously, then reports back a concise summary.
+
+## Key Features
+
+- **Context savings** — Keep your expensive model's context window for reasoning, not screenshots
+- **Any OpenAI-compatible model** — Qwen, DeepSeek, Ollama, vLLM, GPT-4o-mini, or any local model
+- **16 built-in tools** — Screen capture with coordinate grid, mouse, keyboard, browser automation, file I/O
+- **Real Chrome via CDP** — Uses your existing cookies, login state, and extensions (no webdriver detection)
+- **MCP server** — Drop-in integration with Claude Desktop, VS Code, and any MCP client
+- **Rich reports** — Text + embedded screenshots, so the big model sees exactly what it needs
+- **CLI + REPL + API** — Use from terminal, interactively, or programmatically
 
 ## Install
 
@@ -270,6 +308,10 @@ src/
     ├── file/                   # read, write, use_local_image
     └── control/                # report
 ```
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request.
 
 ## License
 
